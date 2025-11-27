@@ -1,0 +1,60 @@
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Output build directories
+dist/
+electronbuild/
+release/
+out/
+
+# Electron Builder cache
+.build/
+electron-builder.yaml
+builder-debug/
+builder-effective-config.yaml
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# VS Code
+.vscode/
+.history/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# GitHub Actions temporary files
+.github/workflows/*.log
+
+# Temporary files
+temp/
+tmp/
+
+# macOS build artifacts
+*.dmg
+*.app
+*.zip
+
+# Windows build artifacts
+*.exe
+*.msi
+*.dll
+
+# Packaging artifacts
+*.asar
+*.asar.unpacked/
+
+# Cache
+.cache/
+.idea/

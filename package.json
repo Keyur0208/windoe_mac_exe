@@ -1,0 +1,52 @@
+{
+  "name": "nilkanth-medico-child-frontend",
+  "version": "0.0.1",
+  "private": true,
+  "author": "Nilkanth Medico PVT LTD",
+  "license": "MIT",
+  "description": "Nilkanth Medico Child PC Frontend App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "os": "^0.1.2"
+  },
+  "devDependencies": {
+    "electron": "^36.2.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.nilkanthmedico.childfrontend",
+    "productName": "Nilkanth Medico Child Frontend",
+    "directories": {
+      "output": "electronbuild"
+    },
+    "files": [
+      "main.js",
+      "logo.ico",
+      "package.json",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "logo.ico"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "logo.icns",
+      "category": "public.app-category.medical"
+    },
+    "dmg": {
+      "background": "dmg-background.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
