@@ -26,11 +26,8 @@ jobs:
       - name: Build Electron App
         run: npm run build
 
-      - name: Package Electron App
-        run: npx electron-builder --win --x64
-
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: electron-win-build
-          path: dist/*
+          name: electron-build-output
+          path: electronbuild/**
