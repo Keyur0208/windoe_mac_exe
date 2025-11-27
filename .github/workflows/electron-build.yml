@@ -1,4 +1,4 @@
-name: Build Electron App
+name: Electron Multi-Platform Build
 
 on:
   push:
@@ -8,11 +8,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-windows:
+    name: Build Windows EXE
     runs-on: windows-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Setup Node
@@ -23,11 +24,37 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build Electron App
-        run: npm run build
+      - name: Build Windows App
+        run: npx electron-builder --win --x64
 
-      - name: Upload Build Artifacts
+      - name: Upload Windows Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: electron-build-output
+          name: windows-build
+          path: electronbuild/**
+
+
+  build-mac:
+    name: Build Mac DMG + ZIP
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Mac App
+        run: npx electron-builder --mac
+
+      - name: Upload Mac Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac-build
           path: electronbuild/**
