@@ -8,8 +8,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder",
-    "os": "^0.1.2"
+    "build": "electron-builder"
   },
   "devDependencies": {
     "electron": "^36.2.0",
@@ -18,19 +17,25 @@
   "build": {
     "appId": "com.nilkanthmedico.childfrontend",
     "productName": "Nilkanth Medico Child Frontend",
+
+    "publish": null,
+
     "directories": {
       "output": "electronbuild"
     },
+
     "files": [
       "main.js",
       "logo.ico",
       "package.json",
       "node_modules/**/*"
     ],
+
     "win": {
       "target": "nsis",
       "icon": "logo.ico"
     },
+
     "mac": {
       "target": [
         "dmg",
@@ -39,9 +44,11 @@
       "icon": "logo.icns",
       "category": "public.app-category.medical"
     },
+
     "dmg": {
       "background": "dmg-background.png"
     },
+
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
