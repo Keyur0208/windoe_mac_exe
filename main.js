@@ -49,7 +49,7 @@ function createWindow() {
     },
   });
 
-  const frontendUrl = "http://localhost:8081";
+  const frontendUrl = "https://app.demo.nilkanthmedico.in";
   mainWindow.loadURL(frontendUrl);
 
   // Inject PC info after page loads
