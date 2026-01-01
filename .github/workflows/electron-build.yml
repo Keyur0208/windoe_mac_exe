@@ -50,8 +50,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build Mac App
-        run: npx electron-builder --mac
+      - name: Build Mac App (Intel x64)
+        run: npx electron-builder --mac --x64
+
+      - name: Build Mac App (Apple Silicon arm64)
+        run: npx electron-builder --mac --arm64
 
       - name: Upload Mac Artifacts
         uses: actions/upload-artifact@v4
