@@ -42,7 +42,7 @@ function createWindow() {
     width: 1280,
     height: 800,
     icon: path.join(__dirname, "logo.ico"),
-    show: false, // Show after content & script load
+    show: false, 
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
