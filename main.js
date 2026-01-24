@@ -49,7 +49,7 @@ function createWindow() {
     },
   });
 
-   const frontendUrl = "http:///192.168.1.150:8081"; // Replace with your frontend URL
+   const frontendUrl = "http:///192.168.1.135:8081"; // Replace with your frontend URL
   mainWindow.loadURL(frontendUrl);
 
   // Inject PC info after page loads
