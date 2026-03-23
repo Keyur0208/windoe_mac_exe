@@ -1,0 +1,22 @@
+# Build outputs
+node_modules/
+dist/
+electronbuild/
+build/
+obfuscated/
+scripts/
+
+# Static / binary assets
+public/images/
+*.ico
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.enc
+*.pem
+
+# Dependency lock files
+package-lock.json
+yarn.lock

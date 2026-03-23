@@ -1,41 +1,71 @@
 {
-  "name": "nilkanth-medico-child-frontend",
+  "name": "nilkanth-medico-homs-child",
   "version": "0.0.1",
   "private": true,
   "author": "Nilkanth Medico PVT LTD",
   "license": "MIT",
-  "description": "Nilkanth Medico Child PC Frontend App",
+  "description": "Nilkanth Medico Hospital Management System - Frontend",
   "main": "main.js",
+  "type": "module",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "dev": "electron .",
+    "build": "electron-builder",
+    "obfuscate": "node scripts/obfuscate.js",
+    "build:prod": "npm run obfuscate && electron-builder --projectDir . --config electron-builder.prod.json",
+    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\" \"*.js\"",
+    "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\" \"*.js\"",
+    "fm:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\" \"*.js\"",
+    "fm:fix": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\" \"*.js\""
+  },
+  "dependencies": {
+    "electron-log": "^5.4.3",
+    "getmac": "^6.6.0",
+    "luxon": "^3.7.2"
   },
   "devDependencies": {
-    "electron": "^36.2.0",
-    "electron-builder": "^26.0.12"
+    "electron": "^35.1.4",
+    "electron-builder": "^26.0.12",
+    "eslint": "^10.0.3",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.0.0",
+    "javascript-obfuscator": "^5.3.0",
+    "prettier": "^3.5.3"
   },
   "build": {
-    "appId": "com.nilkanthmedico.childfrontend",
-    "productName": "Nilkanth Medico Child Frontend",
-
+    "appId": "nilkanth-medico-homs-child.com",
+    "productName": "Nilkanth Medico - HOMS Child",
     "publish": null,
-
     "directories": {
       "output": "electronbuild"
     },
-
     "files": [
       "main.js",
+      "src/**/*",
       "logo.ico",
       "package.json",
+      "public/**/*",
       "node_modules/**/*"
     ],
-
     "win": {
-      "target": "nsis",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
       "icon": "logo.ico"
     },
-
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Medical"
+    },
     "mac": {
       "target": [
         "dmg",
@@ -44,16 +74,17 @@
       "icon": "logo.icns",
       "category": "public.app-category.medical"
     },
-
     "dmg": {
       "background": "dmg-background.png"
     },
-
     "nsis": {
       "oneClick": false,
+      "perMachine": true,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "createStartMenuShortcut": true,
+      "shortcutName": "Nilkanth HOMS Child",
+      "uninstallDisplayName": "Nilkanth Hospital Management System"
     }
   }
 }

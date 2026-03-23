@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src http://localhost:8081"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Connection Lost — Nilkanth Medico ERP</title>
+        <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family:
+                    'Segoe UI',
+                    system-ui,
+                    -apple-system,
+                    sans-serif;
+                background: linear-gradient(135deg, #f0f4ff 0%, #e8f5e9 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #1e293b;
+            }
+
+            .card {
+                background: #ffffff;
+                border-radius: 20px;
+                box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+                padding: 52px 60px;
+                text-align: center;
+                max-width: 500px;
+                width: 92%;
+            }
+
+            /* Hospital cross icon */
+            .icon-wrap {
+                width: 88px;
+                height: 88px;
+                margin: 0 auto 28px;
+                background: #fee2e2;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .icon-wrap svg {
+                width: 44px;
+                height: 44px;
+                stroke: #ef4444;
+            }
+
+            h1 {
+                font-size: 24px;
+                font-weight: 700;
+                color: #0f172a;
+                margin-bottom: 14px;
+                letter-spacing: -0.3px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+                color: #64748b;
+                line-height: 1.7;
+                margin-bottom: 24px;
+            }
+
+            /* Status pill */
+            .status-pill {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: #fef2f2;
+                border: 1px solid #fecaca;
+                color: #b91c1c;
+                font-size: 13px;
+                font-weight: 500;
+                padding: 6px 16px;
+                border-radius: 99px;
+                margin-bottom: 28px;
+            }
+
+            .dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #ef4444;
+                animation: blink 1.4s ease-in-out infinite;
+            }
+
+            @keyframes blink {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+
+                50% {
+                    opacity: 0.2;
+                }
+            }
+
+            /* Retry button */
+            .btn-retry {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 13px 32px;
+                background: #2563eb;
+                color: #fff;
+                border: none;
+                border-radius: 10px;
+                font-size: 15px;
+                font-weight: 600;
+                cursor: pointer;
+                transition:
+                    background 0.18s,
+                    transform 0.1s;
+                user-select: none;
+            }
+
+            .btn-retry:hover {
+                background: #1d4ed8;
+            }
+
+            .btn-retry:active {
+                transform: scale(0.97);
+            }
+
+            .btn-retry svg {
+                width: 16px;
+                height: 16px;
+                stroke: #fff;
+            }
+
+            /* Countdown */
+            .countdown {
+                margin-top: 18px;
+                font-size: 13px;
+                color: #94a3b8;
+            }
+
+            .countdown strong {
+                color: #475569;
+                font-weight: 600;
+            }
+
+            /* Divider */
+            .divider {
+                border: none;
+                border-top: 1px solid #f1f5f9;
+                margin: 32px 0 20px;
+            }
+
+            /* Branding footer */
+            .brand {
+                font-size: 11px;
+                color: #cbd5e1;
+                letter-spacing: 0.4px;
+                text-transform: uppercase;
+            }
+
+            .brand span {
+                color: #e2e8f0;
+                margin: 0 6px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="card">
+            <!-- Icon -->
+            <div class="icon-wrap">
+                <!-- Hospital cross / disconnect icon -->
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <!-- Cross shape -->
+                    <rect x="9" y="2" width="6" height="20" rx="1" />
+                    <rect x="2" y="9" width="20" height="6" rx="1" />
+                    <!-- Slash overlay -->
+                    <line x1="4" y1="4" x2="20" y2="20" stroke-width="2.5" />
+                </svg>
+            </div>
+
+            <h1>Server Connection Lost</h1>
+
+            <p class="subtitle">
+                Unable to reach the Nilkanth Medico ERP server.<br />
+                The server may be starting up or temporarily unavailable.
+            </p>
+
+            <div class="status-pill">
+                <span class="dot"></span>
+                Waiting for server…
+            </div>
+
+            <br />
+
+            <hr class="divider" />
+
+            <p class="brand">
+                Nilkanth Medico Private Limited
+                <span>·</span>
+                Hospital ERP System
+            </p>
+        </div>
+    </body>
+</html>

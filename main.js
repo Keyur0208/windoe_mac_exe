@@ -1,134 +1,150 @@
-const { app, BrowserWindow } = require("electron");
-const path = require("path");
-const os = require("os");
-
 /**
- * Retrieves PC details such as hostname, username, IPv4 address, and MAC address.
- * @returns {Object} PC details.
+ * ---------------------------------------------------------
+ *  Nilkanth Medico Hospital ERP - Electron Main Process
+ *  Production Optimized for Hospital Systems (24×7 usage)
+ * ---------------------------------------------------------
  */
-function getPCDetails() {
-  const networkInterfaces = os.networkInterfaces();
-  let ipAddress = "N/A";
-  let macAddress = "N/A";
 
-  for (const iface of Object.values(networkInterfaces)) {
-    for (const config of iface) {
-      if (config.family === "IPv4" && !config.internal) {
-        ipAddress = config.address;
-        macAddress = config.mac;
-        break;
-      }
-    }
-    if (ipAddress !== "N/A") break;
-  }
+import { app, session } from 'electron'
+import os from 'os'
+import log from 'electron-log'
+import {
+  createWindow,
+  getWindow,
+  showWindow,
+  setQuitting,
+  reloadWindow,
+} from './src/electron/windowManager.js';
+import { registerCrashHandlers } from './src/electron/crashHandler.js';
 
-  return {
-    pcName: os.hostname(),
-    username: os.userInfo().username,
-    ipAddress,
-    macAddress,
-  };
+/* ---------------------------------------------------------
+   LOGGING SYSTEM
+   Hospital ERP debugging & monitoring
+--------------------------------------------------------- */
+log.transports.file.level = 'info'
+log.transports.console.level = 'info'
+log.transports.file.maxSize = 10 * 1024 * 1024
+log.transports.file.archiveLog = true
+
+/* ---------------------------------------------------------
+   ELECTRON PERFORMANCE FLAGS
+   Disable unnecessary Chromium services
+--------------------------------------------------------- */
+app.commandLine.appendSwitch('disable-http-cache')
+app.commandLine.appendSwitch('disable-background-networking')
+app.commandLine.appendSwitch('disable-sync')
+app.commandLine.appendSwitch('disable-renderer-backgrounding')
+
+// Limit disk cache to 100MB
+app.commandLine.appendSwitch('disk-cache-size', '104857600')
+
+/* ---------------------------------------------------------
+   RAM BASED MEMORY OPTIMIZATION
+   Adjust JS memory usage based on computer RAM
+--------------------------------------------------------- */
+const totalRam = os.totalmem() / (1024 * 1024 * 1024)
+if (totalRam <= 4) {
+  // Low RAM hospital computers
+  log.info('[Performance] Low RAM system detected')
+  app.commandLine.appendSwitch(
+    'js-flags',
+    '--max-old-space-size=512'
+  )
+} else if (totalRam <= 8) {
+  // Mid range systems
+  log.info('[Performance] Medium RAM system detected')
+  app.commandLine.appendSwitch(
+    'js-flags',
+    '--max-old-space-size=1024'
+  )
+} else {
+  // High end computers
+  log.info('[Performance] High RAM system detected')
+  app.commandLine.appendSwitch(
+    'js-flags',
+    '--max-old-space-size=2048'
+  )
 }
 
-let mainWindow;
+/* ---------------------------------------------------------
+   GPU DISABLE (Important for Old Hospital PCs)
+   Prevent white screen & GPU crashes
+--------------------------------------------------------- */
 
-/**
- * Creates the main application window, loads the frontend URL,
- * injects PC information into the window's localStorage,
- * and manages window events.
- */
-function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 800,
-    icon: path.join(__dirname, "logo.ico"),
-    show: false, 
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-    },
+app.disableHardwareAcceleration()
+app.commandLine.appendSwitch('disable-gpu')
+app.commandLine.appendSwitch('disable-software-rasterizer')
+
+/* ---------------------------------------------------------
+   SINGLE INSTANCE LOCK
+   Prevent multiple ERP instances
+--------------------------------------------------------- */
+
+const gotLock = app.requestSingleInstanceLock();
+
+if (!gotLock) {
+  log.warn('[App] Already running — second instance exiting');
+  app.quit();
+} else {
+  /* ---------------------------------------------------------
+ HANDLE SECOND INSTANCE
+ Restore existing window
+--------------------------------------------------------- */
+
+  app.on('second-instance', (_event, argv, _workingDir) => {
+    log.info('[App] Second instance blocked — argv:', argv.join(' '));
+    const win = getWindow();
+    if (!win) return;
+    // Restore from minimized / hidden state
+    if (win.isMinimized()) win.restore();
+    if (!win.isVisible()) win.show();
+    win.focus();
+    // Flash the taskbar button so the user notices (Windows)
+    win.flashFrame(true);
+    setTimeout(() => win.flashFrame(false), 3000);
+    log.info('[App] Existing window restored and focused for second-instance request');
   });
 
-   const frontendUrl = "http:///192.168.1.135:8081"; // Replace with your frontend URL
-  mainWindow.loadURL(frontendUrl);
 
-  // Inject PC info after page loads
-  mainWindow.webContents.on("did-finish-load", () => {
-    const pcInfo = getPCDetails();
-    const script = `
-      localStorage.setItem('navType','DEFAULT');
-      localStorage.setItem('resourceInfo', ${JSON.stringify(
-      JSON.stringify(pcInfo)
-    )});
-    `;
-    mainWindow.webContents
-      .executeJavaScript(script)
-      .then(() => {
-        mainWindow.show();
-      })
-      .catch((err) => {
-        console.error("Failed to inject PC info:", err);
-        mainWindow.show();
-      });
-  });
+  app.whenReady().then(async () => {
+    log.info('='.repeat(60));
+    log.info('[App] Nilkanth Medico Hospital ERP  —  STARTING');
+    log.info(
+      `[App] Electron v${process.versions.electron}  |  Node v${process.versions.node}  |  PID ${process.pid}`,
+    );
+    log.info('='.repeat(60));
 
-  // Clear localStorage on window close, then quit app gracefully
-  mainWindow.on("close", (event) => {
-    if (mainWindow && mainWindow.webContents) {
-      event.preventDefault();
-      const clearScript = `
-      localStorage.removeItem('indoorId');
-      localStorage.removeItem('billNo');
-      localStorage.removeItem('patientBillId');
-      localStorage.removeItem('isUpdate');
-      localStorage.removeItem('dischargeCardId');
-      localStorage.removeItem('receiptId');
-      localStorage.removeItem('endoLaproImageId');`;
-      mainWindow.webContents
-        .executeJavaScript(clearScript)
-        .then(() => {
-          mainWindow = null;
-          app.quit();
-        })
-        .catch((err) => {
-          console.error("Failed to clear localStorage on window close:", err);
-          mainWindow = null;
-          app.quit();
-        });
-    }
-  });
+    // session 
+    await session.defaultSession.clearCache();
+    await session.defaultSession.clearStorageData();
 
-  mainWindow.on("closed", () => {
-    mainWindow = null;
-  });
-}
-
-// App ready: create window
-app.whenReady().then(createWindow);
-
-// macOS specific behaviour: recreate window if none are open
-app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
-  }
-});
 
-// Quit app when all windows are closed, except on macOS
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
+    //  CRASH HANDLER Prevent white screen
+    registerCrashHandlers(getWindow, reloadWindow, app);
 
-// Ensure localStorage clearing before app quits (fallback)
-app.on("before-quit", (event) => {
-  if (mainWindow && mainWindow.webContents) {
-    event.preventDefault();
-    const clearScript = `localStorage.clear();`;
-    mainWindow.webContents
-      .executeJavaScript(clearScript)
-      .finally(() => {
-        app.exit(0);
-      });
-  }
-});
+    log.info('[App] All modules ready  —  ERP is RUNNING');
+  });
+
+  // --- macOS: clicking the dock icon restores the window ---------------------
+  app.on('activate', () => showWindow());
+
+  // --- Keep app alive in tray even when all windows are closed ---------------
+  app.on('window-all-closed', () => {
+    log.info('[App] All windows closed  —  app is still running in system tray');
+  });
+
+  // --- Clean up before the process exits -------------------------------------
+  app.on('before-quit', () => {
+    log.info('[App] Shutting down...');
+    setQuitting(true); // let BrowserWindow actually close instead of hiding
+    stopCronJobs(); // stop all scheduled background tasks
+  });
+
+  app.on('quit', () => {
+    log.info('[App] Nilkanth Medico Hospital ERP  —  CLOSED');
+    log.info('='.repeat(60));
+  });
+}
+
+
