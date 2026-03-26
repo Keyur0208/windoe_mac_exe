@@ -9,7 +9,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ERP_URL = SERVER.localUrl;
 const OFFLINE_PAGE = join(__dirname, '..', '..', ASSETS.offlinePage);
 let win = null;
-let quitting = false;
 
 /* =====================================================
    LICENSE CHECK + EXPIRY + MACHINE VALIDATION
@@ -75,28 +74,10 @@ export const createWindow = () => {
     });
 
     // When user clicks X — hide to tray instead of closing (unless app is quitting)
-    win.on('close', (e) => {
-        if (!quitting) {
-            e.preventDefault();
-            win.hide();
-            log.info('[Window] Close intercepted — hidden to system tray');
-        } else {
-            // App is quitting — clear sensitive session data from localStorage first
-            e.preventDefault();
-            const clearScript = STORAGE_KEYS.map((k) => `localStorage.removeItem('${k}');`).join(
-                '\n',
-            );
-
-            win.webContents
-                .executeJavaScript(clearScript)
-                .catch((err) => {
-                    log.warn(MESSAGES.window.clearFail, err.message);
-                })
-                .finally(() => {
-                    log.info('[Window] Session localStorage cleared — closing window');
-                    win.destroy(); // destroy() bypasses the close event so no infinite loop
-                });
-        }
+    win.on('close', () => {
+        log.info('[Window] Window closing — application exiting');
+        quitting = true;
+        app.quit();
     });
 
     // Open any external links in the user's default browser (not inside Electron)
