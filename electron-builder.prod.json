@@ -1,6 +1,9 @@
 {
     "appId": "nilkanth-medico-homs-child.com",
     "productName": "Nilkanth Medico - HOMS Child",
+    "artifactName": "Nilkanth-Medico-HOMS-CHILD-Setup-${version}.${ext}",
+    "compression": "maximum",
+    "asar": true,
     "directories": {
         "output": "electronbuild"
     },
@@ -14,15 +17,7 @@
             ]
         },
         {
-            "from": "dist",
-            "to": "dist"
-        },
-        {
             "from": "logo.ico",
-            "to": "."
-        },
-        {
-            "from": "public.pem",
             "to": "."
         },
         "package.json"

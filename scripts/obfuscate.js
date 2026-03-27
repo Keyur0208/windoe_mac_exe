@@ -43,6 +43,7 @@ const JS_SOURCES = [
 
 // Files / dirs that are copied unchanged (assets, templates, config)
 const COPY_SOURCES = [
+    'public',
     'package.json',
     'logo.ico',
     'logo.icns',

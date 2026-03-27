@@ -74,10 +74,21 @@ export const createWindow = () => {
     });
 
     // When user clicks X — hide to tray instead of closing (unless app is quitting)
-    win.on('close', () => {
+    win.on('close', (e) => {
         log.info('[Window] Window closing — application exiting');
-        quitting = true;
-        app.quit();
+        e.preventDefault();
+        const clearScript = STORAGE_KEYS.map((k) => `localStorage.removeItem('${k}');`).join('\n');
+
+        win.webContents
+            .executeJavaScript(clearScript)
+            .catch((err) => {
+                log.warn(MESSAGES.window.clearFail, err.message);
+            })
+            .finally(() => {
+                log.info('[Window] Session localStorage cleared — closing window');
+                win.destroy(); // destroy() bypasses the close event so no infinite loop
+                app.quit();
+            });
     });
 
     // Open any external links in the user's default browser (not inside Electron)
@@ -135,16 +146,6 @@ export const showWindow = () => {
 };
 
 // -----------------------------------------------------------------------------
-// setQuitting
-// Call with true just before app.quit() so the 'close' event lets the
-// window close normally instead of hiding to tray.
-// -----------------------------------------------------------------------------
-export const setQuitting = (value) => {
-    quitting = value;
-    log.info('[Window] Quit mode:', value);
-};
-
-// -----------------------------------------------------------------------------
 // reloadWindow
 // Reloads the ERP URL. Falls back to the offline page if the load fails.
 // -----------------------------------------------------------------------------
@@ -156,6 +157,6 @@ export const reloadWindow = async () => {
         log.info('[Window] Reload successful');
     } catch (err) {
         log.warn('[Window] Reload failed — loading offline page:', err.message);
-        win.loadFile(OFFLINE_PAGE).catch(() => { });
+        win.loadFile(OFFLINE_PAGE).catch(() => {});
     }
 };

@@ -29,13 +29,16 @@
     "eslint": "^10.0.3",
     "eslint-config-prettier": "^9.1.0",
     "globals": "^15.0.0",
-    "javascript-obfuscator": "^5.3.0",
+    "javascript-obfuscator": "^5.4.1",
     "prettier": "^3.5.3"
   },
   "build": {
     "appId": "nilkanth-medico-homs-child.com",
     "productName": "Nilkanth Medico - HOMS Child",
-    "publish": null,
+    "copyright": "Copyright © 2026 Nilkanth Medico Pvt Ltd",
+    "asar": true,
+    "compression": "maximum",
+    "artifactName": "Nilkanth-Medico-HOMS-CHILD-Setup-${version}.${ext}",
     "directories": {
       "output": "electronbuild"
     },
@@ -44,8 +47,7 @@
       "src/**/*",
       "logo.ico",
       "package.json",
-      "public/**/*",
-      "node_modules/**/*"
+      "public/**/*"
     ],
     "win": {
       "target": [
@@ -57,7 +59,8 @@
           ]
         }
       ],
-      "icon": "logo.ico"
+      "icon": "logo.ico",
+      "legalTrademarks": "Nilkanth HOMS"
     },
     "linux": {
       "target": [

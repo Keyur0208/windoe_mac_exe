@@ -37,7 +37,6 @@ const doRelaunch = async (reason, appRef) => {
     await session.defaultSession.clearStorageData();
     appRef.relaunch();
     appRef.exit(0);
-
 };
 
 // ---------------------------------------------------------------------------
@@ -68,7 +67,10 @@ export const startMemoryWatchdog = (appRef) => {
         // --- Trigger 1: Scheduled nightly relaunch ---------------------------
         // Fires once per day at relaunchHour:relaunchMinute (default 3 AM) if user is idle
         if (isScheduledTime() && idle) {
-            doRelaunch(`scheduled daily relaunch at ${WATCHDOG.relaunchHour}:${String(WATCHDOG.relaunchMinute).padStart(2, '0')}`, appRef);
+            doRelaunch(
+                `scheduled daily relaunch at ${WATCHDOG.relaunchHour}:${String(WATCHDOG.relaunchMinute).padStart(2, '0')}`,
+                appRef,
+            );
             return;
         }
 
