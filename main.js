@@ -2,6 +2,8 @@ const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const os = require("os");
 
+app.disableHardwareAcceleration();
+
 /**
  * Retrieves PC details such as hostname, username, IPv4 address, and MAC address.
  * @returns {Object} PC details.
@@ -42,21 +44,20 @@ function createWindow() {
     width: 1280,
     height: 800,
     icon: path.join(__dirname, "logo.ico"),
-    show: false, 
+    show: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
     },
   });
 
-   const frontendUrl = "http:///192.168.1.135:8081"; // Replace with your frontend URL
+  const frontendUrl = "http://192.168.1.135:8081"; // Replace with your frontend URL
   mainWindow.loadURL(frontendUrl);
 
   // Inject PC info after page loads
   mainWindow.webContents.on("did-finish-load", () => {
     const pcInfo = getPCDetails();
     const script = `
-      localStorage.setItem('navType','DEFAULT');
       localStorage.setItem('resourceInfo', ${JSON.stringify(
       JSON.stringify(pcInfo)
     )});
@@ -83,7 +84,8 @@ function createWindow() {
       localStorage.removeItem('isUpdate');
       localStorage.removeItem('dischargeCardId');
       localStorage.removeItem('receiptId');
-      localStorage.removeItem('endoLaproImageId');`;
+      localStorage.removeItem('endoLaproImageId');
+      localStorage.removeItem('navType');`
       mainWindow.webContents
         .executeJavaScript(clearScript)
         .then(() => {
